@@ -1,0 +1,5 @@
+{
+  "name": "Binance Profit Coin Scanner",
+  "description": "A professional-grade real-time cryptocurrency scanner that ranks Binance USDT pairs based on liquidity, trend strength, volatility, and technical breakouts using a proprietary 0-100 scoring system.",
+  "requestFramePermissions": []
+}
