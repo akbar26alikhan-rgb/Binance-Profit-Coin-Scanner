@@ -28,6 +28,17 @@ const Dashboard: React.FC<DashboardProps> = ({ coins, filters, onSelectCoin }) =
     }
   };
 
+  const getIconUrl = (symbol: string) => {
+    const baseAsset = symbol.replace('USDT', '');
+    // Using Binance official CDN for asset logos
+    return `https://static.binance.com/assets/asset/symbol/${baseAsset.toLowerCase()}.png`;
+  };
+
+  const handleIconError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    // Hide the broken image and allow the text to be the primary identifier
+    (e.target as HTMLImageElement).style.display = 'none';
+  };
+
   return (
     <div className="overflow-x-auto rounded-xl border border-[#2b3139] bg-[#161a1e]">
       <table className="w-full text-left border-collapse">
@@ -50,10 +61,25 @@ const Dashboard: React.FC<DashboardProps> = ({ coins, filters, onSelectCoin }) =
               className="hover:bg-[#1e2329] cursor-pointer transition-colors group"
             >
               <td className="px-6 py-4">
-                <div className="font-bold text-[#eaecef] group-hover:text-yellow-400">
-                  {coin.symbol.replace('USDT', '')}
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 rounded-full bg-[#1e2329] flex items-center justify-center overflow-hidden border border-[#2b3139] flex-shrink-0">
+                    <img 
+                      src={getIconUrl(coin.symbol)} 
+                      alt=""
+                      className="w-full h-full object-cover"
+                      onError={handleIconError}
+                    />
+                    <span className="text-[10px] font-bold text-[#474d57] absolute pointer-events-none group-hover:text-[#848e9c]">
+                      {coin.symbol.slice(0, 1)}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="font-bold text-[#eaecef] group-hover:text-yellow-400 transition-colors">
+                      {coin.symbol.replace('USDT', '')}
+                    </div>
+                    <div className="text-[10px] text-[#474d57]">USDT Pair</div>
+                  </div>
                 </div>
-                <div className="text-[10px] text-[#474d57]">USDT Pair</div>
               </td>
               <td className="px-6 py-4">
                 <div className="text-sm text-[#eaecef] font-medium">${parseFloat(coin.lastPrice).toLocaleString()}</div>

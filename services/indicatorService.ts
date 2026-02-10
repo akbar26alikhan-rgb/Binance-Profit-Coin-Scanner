@@ -2,6 +2,7 @@
 import { KlineData, Indicators } from '../types';
 
 export const calculateEMA = (data: number[], period: number): number[] => {
+  if (data.length === 0) return [];
   const k = 2 / (period + 1);
   const ema = [data[0]];
   for (let i = 1; i < data.length; i++) {
@@ -28,17 +29,36 @@ export const calculateRSI = (data: number[], period: number = 14): number => {
   return 100 - 100 / (1 + rs);
 };
 
-export const calculateATR = (klines: KlineData[], period: number = 14): number => {
-  if (klines.length < period + 1) return 0;
-  let trSum = 0;
-  for (let i = klines.length - period; i < klines.length; i++) {
-    const high = klines[i].high;
-    const low = klines[i].low;
-    const prevClose = klines[i - 1].close;
-    const tr = Math.max(high - low, Math.abs(high - prevClose), Math.abs(low - prevClose));
-    trSum += tr;
+export const calculateRSISeries = (data: number[], period: number = 14): number[] => {
+  if (data.length < period + 1) return new Array(data.length).fill(50);
+  const rsi: number[] = new Array(period).fill(50);
+  
+  let gains = 0;
+  let losses = 0;
+
+  for (let i = 1; i <= period; i++) {
+    const diff = data[i] - data[i - 1];
+    if (diff >= 0) gains += diff;
+    else losses -= diff;
   }
-  return trSum / period;
+  
+  let avgGain = gains / period;
+  let avgLoss = losses / period;
+  
+  rsi.push(avgLoss === 0 ? 100 : 100 - (100 / (1 + avgGain / avgLoss)));
+
+  for (let i = period + 1; i < data.length; i++) {
+    const diff = data[i] - data[i - 1];
+    const gain = diff >= 0 ? diff : 0;
+    const loss = diff < 0 ? -diff : 0;
+
+    avgGain = (avgGain * (period - 1) + gain) / period;
+    avgLoss = (avgLoss * (period - 1) + loss) / period;
+
+    rsi.push(avgLoss === 0 ? 100 : 100 - (100 / (1 + avgGain / avgLoss)));
+  }
+  
+  return rsi;
 };
 
 export const computeIndicators = (klines: KlineData[]): Indicators => {
@@ -82,4 +102,17 @@ export const computeIndicators = (klines: KlineData[]): Indicators => {
     bollingerLower,
     breakoutStatus: status
   };
+};
+
+export const calculateATR = (klines: KlineData[], period: number = 14): number => {
+  if (klines.length < period + 1) return 0;
+  let trSum = 0;
+  for (let i = klines.length - period; i < klines.length; i++) {
+    const high = klines[i].high;
+    const low = klines[i].low;
+    const prevClose = klines[i - 1].close;
+    const tr = Math.max(high - low, Math.abs(high - prevClose), Math.abs(low - prevClose));
+    trSum += tr;
+  }
+  return trSum / period;
 };

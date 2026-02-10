@@ -22,6 +22,11 @@ const CoinDetails: React.FC<CoinDetailsProps> = ({ coin, onBack }) => {
 
   const plan = calculateTradePlan();
 
+  const getIconUrl = (symbol: string) => {
+    const baseAsset = symbol.replace('USDT', '');
+    return `https://static.binance.com/assets/asset/symbol/${baseAsset.toLowerCase()}.png`;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -35,9 +40,19 @@ const CoinDetails: React.FC<CoinDetailsProps> = ({ coin, onBack }) => {
           Back to Dashboard
         </button>
         <div className="flex items-center space-x-4">
-          <div className="text-right">
-            <h1 className="text-2xl font-bold text-[#eaecef]">{coin.symbol}</h1>
-            <p className="text-[#848e9c] text-sm">${parseFloat(coin.lastPrice).toLocaleString()}</p>
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 rounded-full overflow-hidden bg-[#1e2329] border border-[#2b3139]">
+              <img 
+                src={getIconUrl(coin.symbol)} 
+                alt="" 
+                className="w-full h-full object-cover"
+                onError={(e) => (e.target as HTMLImageElement).style.display = 'none'}
+              />
+            </div>
+            <div className="text-right">
+              <h1 className="text-2xl font-bold text-[#eaecef]">{coin.symbol}</h1>
+              <p className="text-[#848e9c] text-sm">${parseFloat(coin.lastPrice).toLocaleString()}</p>
+            </div>
           </div>
           <div className={`text-3xl font-black px-4 py-2 rounded-xl bg-[#1e2329] border border-[#2b3139]`}>
             {coin.scores.grade}
