@@ -47,6 +47,7 @@ export interface CoinData extends BinanceTicker {
   scores: ScoreDetails;
   fundingRate?: number;
   openInterest?: number;
+  history?: KlineData[];
 }
 
 export enum View {

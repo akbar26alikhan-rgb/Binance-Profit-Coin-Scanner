@@ -72,7 +72,8 @@ export const processAllCoins = async (
         ...ticker,
         indicators,
         scores,
-        ...futures
+        ...futures,
+        history: klines // Store history for charting
       });
       
       onProgress?.(i + 1, targetCoins.length);

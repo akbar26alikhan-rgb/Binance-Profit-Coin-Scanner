@@ -2,6 +2,7 @@
 import React from 'react';
 import { CoinData } from '../types';
 import ScoreCard from './ScoreCard';
+import PriceChart from './PriceChart';
 
 interface CoinDetailsProps {
   coin: CoinData;
@@ -46,6 +47,15 @@ const CoinDetails: React.FC<CoinDetailsProps> = ({ coin, onBack }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+          {/* Main Chart Section */}
+          <div className="bg-[#161a1e] p-6 rounded-xl border border-[#2b3139]">
+            <h3 className="text-lg font-bold mb-4 flex items-center">
+              <span className="w-1.5 h-6 bg-green-500 rounded-full mr-2"></span>
+              Live Price Action (1H)
+            </h3>
+            <PriceChart data={coin.history || []} />
+          </div>
+
           <div className="bg-[#161a1e] p-6 rounded-xl border border-[#2b3139]">
             <h3 className="text-lg font-bold mb-4 flex items-center">
               <span className="w-1.5 h-6 bg-yellow-500 rounded-full mr-2"></span>
